@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ledger — Monthly Expenses</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#12141c">
+
+<!-- iOS "Add to Home Screen" support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ledger">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div>
+      <div class="eyebrow">Personal Finance</div>
+      <h1>Ledger</h1>
+    </div>
+    <button class="gear-btn" id="settings-btn" aria-label="Settings">⚙</button>
+  </header>
+
+  <div class="month-nav">
+    <button id="prev-month" aria-label="Previous month">‹</button>
+    <div style="text-align:center;">
+      <div class="month-label" id="month-label">Month Year</div>
+      <div class="today-btn" id="jump-today" style="margin-top:4px; display:inline-block; cursor:pointer;">Today</div>
+    </div>
+    <button id="next-month" aria-label="Next month">›</button>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-total">
+      <div class="lbl">Spent this month</div>
+      <div class="amt" id="total-amt">$0.00</div>
+    </div>
+    <div class="summary-sub">
+      <span><b id="tx-count">0</b> transactions</span>
+      <span>avg <b id="avg-amt">$0.00</b></span>
+    </div>
+
+    <div class="budget-row" id="budget-row" style="display:none;">
+      <div class="budget-labels">
+        <span>Budget</span>
+        <span><b id="budget-spent">$0</b> / <span id="budget-total">$0</span></span>
+      </div>
+      <div class="budget-bar"><div class="budget-bar-fill" id="budget-fill" style="width:0%;"></div></div>
+    </div>
+    <div class="no-budget-note" id="no-budget-note">
+      No monthly budget set. <a id="set-budget-link">Set one</a>
+    </div>
+
+    <div class="category-breakdown" id="category-breakdown" style="display:none;">
+      <div class="cb-title">By Category</div>
+      <div id="cb-rows"></div>
+    </div>
+  </div>
+
+  <section class="card">
+    <h2 id="form-title">Add Expense</h2>
+    <form id="expense-form">
+      <div class="row">
+        <div class="field">
+          <label for="f-amount">Amount</label>
+          <input type="number" id="f-amount" inputmode="decimal" step="0.01" min="0" placeholder="0.00" required>
+        </div>
+        <div class="field">
+          <label for="f-date">Date</label>
+          <input type="date" id="f-date" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="f-category">Category</label>
+          <select id="f-category">
+            <option value="Housing">Housing</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Health">Health</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-note">Note (optional)</label>
+          <input type="text" id="f-note" maxlength="60" placeholder="e.g. Groceries">
+        </div>
+      </div>
+      <div id="form-error"></div>
+      <div class="form-actions">
+        <button type="submit" class="primary" id="submit-btn">Add Expense</button>
+        <button type="button" class="ghost" id="cancel-edit-btn" style="display:none;">Cancel</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>This Month's Transactions</h2>
+    <ul class="tx-list" id="tx-list"></ul>
+    <div class="empty-state" id="empty-state">No expenses logged for this month yet.</div>
+  </section>
+
+  <div class="footer-links">
+    <button id="export-csv-btn">Export CSV</button>
+    <button id="clear-month-btn">Clear this month</button>
+  </div>
+
+</div>
+
+<div id="settings-overlay">
+  <div class="sheet">
+    <h2>Settings</h2>
+    <div class="field">
+      <label for="s-budget">Monthly budget ($, applies to every month)</label>
+      <input type="number" id="s-budget" min="0" step="1" placeholder="e.g. 2000">
+    </div>
+    <div class="sheet-actions">
+      <button class="primary" id="save-budget-btn">Save</button>
+      <button class="ghost" id="clear-budget-btn">Remove Budget</button>
+    </div>
+    <div class="sheet-close" id="close-settings">Close</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
