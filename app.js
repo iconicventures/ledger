@@ -4,6 +4,14 @@
   // ---------- Constants ----------
   const STORAGE_KEY = "ledger_expenses_v1";
   const BUDGET_KEY = "ledger_budget_v1";
+  const THEME_KEY = "ledger_theme_v1";
+  const VALID_THEMES = ["dark", "light", "blue-pink", "white-blue"];
+  const THEME_META_COLORS = {
+    dark: "#12141c",
+    light: "#f5f3ee",
+    "blue-pink": "#17172b",
+    "white-blue": "#ffffff"
+  };
 
   const CATEGORY_COLORS = {
     Housing: "#e8b96b",
@@ -90,6 +98,7 @@
   // ---------- State ----------
   let expenses = [];
   let budget = null;
+  let theme = "dark";
   let currentMonth = monthKey(todayISO());
   let editingId = null;
 
@@ -109,6 +118,12 @@
     }catch(e){
       budget = null;
     }
+    try{
+      const t = localStorage.getItem(THEME_KEY);
+      theme = VALID_THEMES.includes(t) ? t : "dark";
+    }catch(e){
+      theme = "dark";
+    }
   }
 
   function saveExpenses(){
@@ -127,6 +142,18 @@
         localStorage.setItem(BUDGET_KEY, String(budget));
       }
     }catch(e){ /* non-fatal */ }
+  }
+
+  function applyTheme(name){
+    if(!VALID_THEMES.includes(name)) name = "dark";
+    theme = name;
+    document.documentElement.setAttribute("data-theme", theme);
+    try{ localStorage.setItem(THEME_KEY, theme); }catch(e){ /* non-fatal */ }
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if(metaThemeColor) metaThemeColor.setAttribute("content", THEME_META_COLORS[theme] || "#12141c");
+    document.querySelectorAll(".theme-swatch").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.theme === theme);
+    });
   }
 
   // ---------- DOM refs ----------
@@ -165,6 +192,7 @@
     sBudget: document.getElementById("s-budget"),
     saveBudgetBtn: document.getElementById("save-budget-btn"),
     clearBudgetBtn: document.getElementById("clear-budget-btn"),
+    themeSwatches: document.getElementById("theme-swatches"),
     toast: document.getElementById("toast")
   };
 
@@ -408,7 +436,12 @@
   // ---------- Wire up events ----------
   function init(){
     loadState();
+    applyTheme(theme);
     el.fDate.value = todayISO();
+
+    el.themeSwatches.querySelectorAll(".theme-swatch").forEach(btn=>{
+      btn.addEventListener("click", ()=> applyTheme(btn.dataset.theme));
+    });
 
     el.prevMonth.addEventListener("click", ()=>{ currentMonth = shiftMonth(currentMonth, -1); render(); });
     el.nextMonth.addEventListener("click", ()=>{ currentMonth = shiftMonth(currentMonth, 1); render(); });

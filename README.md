@@ -31,6 +31,7 @@ You'll now have a "Ledger" icon on your home screen. Opening it launches in full
 - Swipe between months using the arrows, or tap **Today** to jump back to the current month.
 - Tap any transaction to edit it, or the ✕ to delete it.
 - Set a monthly budget from the gear icon — the progress bar turns amber near the limit and red if you go over.
+- Pick a theme from the gear icon: Dark, Light, Blue & Pink, or White & Blue. Your choice is remembered.
 - **Export CSV** downloads the current month's transactions if you want to open them in a spreadsheet.
 
 ## A note on your data
